@@ -40,7 +40,7 @@ contract shop is StandardToken, Ownable {
     shopOwner = msg.sender;
   }
 
-  function TransferShopOwnership(address _newOwner) public onlyShopOwner() {
+  function transferShopOwnership(address _newOwner) public onlyShopOwner() {
     shopOwner = _newOwner;
 
     emit LogTransferShopOwnership(_newOwner);
@@ -74,8 +74,8 @@ contract shop is StandardToken, Ownable {
 
     uint256 totalValue = Shop[_itemNumber].value * _amount;
 
-    balances[msg.sender] -= totalValue;
-    balances[shopOwner] += totalValue;
+    balances[msg.sender] = balances[msg.sender].sub(totalValue);
+    balances[shopOwner] = balances[msg.sender].add(tatalValue);
 
     emit LogBuyItem(_itemNumber, _amount, totalValue);
   }
@@ -85,6 +85,10 @@ contract shop is StandardToken, Ownable {
 
     if(Shop[_itemNumber].opened == false) {
       Shop[_itemNumber].opened = true;
+    }
+
+    if(_newAmount == 0) {
+      Shop[_itemNumber].opened = false;
     }
 
     emit LogChangeAmount(_itemNumber, _newAmount);
